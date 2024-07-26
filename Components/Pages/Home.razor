@@ -1,0 +1,31 @@
+﻿@page "/"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<PageTitle>Home Page</PageTitle>
+
+<h1>Sreekumar's Page</h1>
+<h1>@authMessage</h1>
+Welcome to your new app.
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private string? authMessage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            authMessage = "Not Authenticated";
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+            authMessage = "Authenticated";
+
+
+
+    }
+}

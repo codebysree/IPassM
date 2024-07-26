@@ -1,0 +1,56 @@
+﻿@page "/register"
+@layout LoginLayout
+
+<div class="login-box">
+    <EditForm Model="registerModel" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <h1 class="text-center">Register</h1>
+        <div class="form-group">
+            <label for="email">Email ID</label>
+            <InputText id="email" class="form-control" @bind-Value="registerModel.Email" />
+            <ValidationMessage For="@(() => registerModel.Email)" />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <InputText id="password" type="password" class="form-control" @bind-Value="registerModel.Password" />
+            <ValidationMessage For="@(() => registerModel.Password)" />
+        </div>
+
+        <div class="form-group">
+            <label for="mobileNumber">Mobile Number</label>
+            <InputText id="mobileNumber" class="form-control" @bind-Value="registerModel.MobileNumber" />
+            <ValidationMessage For="@(() => registerModel.MobileNumber)" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+        <a href="login">Login</a>
+    </EditForm>
+    
+</div>
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+
+    private void HandleValidSubmit()
+    {
+        
+        // Handle the form submission, e.g., save the data to the database
+    }
+
+    public class RegisterModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [MinLength(6)]
+        public string Password { get; set; }
+
+        [Required]
+        [Phone]
+        public string MobileNumber { get; set; }
+    }
+}
