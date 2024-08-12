@@ -1,3 +1,7 @@
+:root {
+    --gradient-bg: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -13,7 +17,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
@@ -48,4 +52,55 @@ h1:focus {
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
+}
+
+.header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.sidebar {
+    background: linear-gradient(180deg, #343a40, #6c757d);
+    /*min-height: 100vh;*/
+}
+
+    .sidebar a {
+        color: white;
+    }
+
+        .sidebar a.active {
+            background-color: #495057;
+        }
+
+.main-content {
+    padding: 20px;
+}
+
+.card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+
+.gradient-button {
+    background: var(--gradient-bg);
+    color: white;
+    border: none;
+}
+
+    .gradient-button:hover {
+        background: var(--gradient-bg);
+    }
+
+.container {
+    max-width: 900px;
+}
+
+.card-header {
+    background: var(--gradient-bg);
+}
+
+.btn-pinky {
+    background-color: #a92ead;
 }

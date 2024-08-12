@@ -7,24 +7,34 @@
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
+    <nav class="flex-column mb-auto">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="bi bi-house-door-fill-nav-menu h-50" style="" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-
-       @*  <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div> *@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+                <span class="bi bi-list-nested-nav-menu h-50" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="credential/read">
+                <i class="bi bi-shield-lock" fill='white' width='20' height='20'></i>
+                Credentials
+            </NavLink>
+        </div>
+
     </nav>
+
+    <br />
+    <div class="nav-item px-3">
+        <NavLink class="nav-link position-absolute bottom-0 start-0" href="/account/logout">
+            <i class="bi bi-lock" fill='white' width='20' height='20'></i>
+            Logout
+        </NavLink>
+    </div>
 </div>
 

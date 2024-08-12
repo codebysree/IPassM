@@ -1,4 +1,9 @@
-﻿.login-box {
+﻿:root {
+    --gradient-bg: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}
+
+
+.login-box {
     background-color: white;
     padding: 30px;
     border-radius: 10px;
@@ -16,6 +21,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background: var(--gradient-bg);
 }
+
 

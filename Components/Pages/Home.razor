@@ -20,7 +20,7 @@ Welcome to your new app.
         if (!user.Identity.IsAuthenticated)
         {
             authMessage = "Not Authenticated";
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo("/account/login");
         }
         else
             authMessage = "Authenticated";

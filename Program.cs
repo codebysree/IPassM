@@ -1,5 +1,8 @@
-using IPassM.Components;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using IPassM.Components;
+using IPassM.Entities;
+using IPassM.Services;
 
 namespace IPassM
 {
@@ -8,7 +11,6 @@ namespace IPassM
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
@@ -21,8 +23,12 @@ namespace IPassM
                     options.AccessDeniedPath = "/Forbidden/";
                 }); ;
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddScoped<UserService>();
+            //builder.Services.AddScoped<CsvService>();
 
             var app = builder.Build();
+
+            SeedDefaultUser();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -39,15 +45,41 @@ namespace IPassM
             });
 
             app.UseStaticFiles();
-            app.UseAntiforgery();
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseAntiforgery();
 
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
 
             app.Run();
+        }
+
+        private static void SeedDefaultUser()
+        {
+            string directoryPath = "Credentials";
+            string filePath = Path.Combine(directoryPath, "UserCredential.json");
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            if (!File.Exists(filePath))
+            {
+                List<UserCredentials> defaultUsers =
+                [
+                    new() {
+                        Id = Guid.NewGuid(),
+                        Username = "superadmin@gmail.com",
+                        Password = "superadmin",
+                        Name = "Superadmin"
+                    }
+                ];
+                string json = JsonSerializer.Serialize(defaultUsers, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(filePath, json);
+            }
         }
     }
 }

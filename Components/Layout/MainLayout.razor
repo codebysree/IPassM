@@ -7,17 +7,17 @@
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        @* <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About2</a>
             <AuthorizeView>
                 <Authorized>
-                    <button class="btn btn-primary mx-2">  Logout</button>
+                    <a class="btn btn-primary" href="/account/logout" >Logout</a>
                 </Authorized>
                 <NotAuthorized>
                     This content is displayed if the user is Not Authorized
                 </NotAuthorized>
             </AuthorizeView>
-        </div>
+        </div> *@
 
         <article class="content px-4">
             @Body
