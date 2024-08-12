@@ -29,7 +29,7 @@ namespace IPassM.Services
             }
         }
 
-        public void AddEntry(Guid credentialId,string websiteName, string userName, string password)
+        public void AddEntry(Guid credentialId, string websiteName, string userName, string password)
         {
             var entries = ReadEntries();
             var newEntry = new Credential
@@ -79,16 +79,27 @@ namespace IPassM.Services
             }).ToList();
         }
 
-        public List<Credential> ViewEntry()
+        public Credential? ViewEntry(Guid CredentialId)
         {
             var entries = ReadEntries();
-            return entries.Select(e => new Credential
-            {
-                WebsiteName = Decrypt(e.WebsiteName),
-                UserName = Decrypt(e.UserName),
-                Password = "****"
-                //Decrypt(e.Password)
-            }).ToList();
+            return entries
+                .Where(a => a.CredentialId == CredentialId)
+                .Select(e => new Credential
+                {
+                    WebsiteName = Decrypt(e.WebsiteName),
+                    UserName = Decrypt(e.UserName),
+                    Password = "****"
+                    //Decrypt(e.Password)
+                }).FirstOrDefault();
+        }
+
+        public string GetPassword(Guid CredentialId)
+        {
+            var entries = ReadEntries();
+            string password = entries
+                .First(a => a.CredentialId == CredentialId)
+                .Password;
+            return Decrypt(password);
         }
 
         private List<Credential> ReadEntries()
@@ -108,10 +119,33 @@ namespace IPassM.Services
         private void WriteEntries(List<Credential> entries)
         {
             Console.Write("_filePath", _filePath);
-            using (var writer = new StreamWriter(_filePath))
-            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            if (File.Exists(_filePath))
             {
-                csv.WriteRecords(entries);
+                FileAttributes attributes = File.GetAttributes(_filePath);
+
+                if ((attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                {
+                    File.SetAttributes(_filePath, attributes & ~FileAttributes.Hidden);
+                }
+
+                try
+                {
+
+                    using (var writer = new StreamWriter(_filePath))
+                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        csv.WriteRecords(entries);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    throw;
+                }
+                finally
+                {
+                    File.SetAttributes(_filePath, attributes | FileAttributes.Hidden);
+                }
             }
         }
 
