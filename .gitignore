@@ -151,3 +151,7 @@ src/Razor/benchmarks/Microsoft.AspNetCore.Razor.Microbenchmarks/BenchmarkDotNet.
 
 # testapp modifications
 src/Razor/test/testapps/ComponentApp/Components/Pages/Generated.razor
+
+#Directories
+/UserCredential
+/Credentials/UserCredential.json
