@@ -55,10 +55,10 @@ namespace IPassM.Services
             }
         }
 
-        public void DeleteEntry(string websiteName)
+        public void DeleteEntry(Guid CredentialId)
         {
             var entries = ReadEntries();
-            var entry = entries.FirstOrDefault(e => Decrypt(e.WebsiteName) == websiteName);
+            var entry = entries.FirstOrDefault(e => e.CredentialId == CredentialId);
             if (entry != null)
             {
                 entries.Remove(entry);

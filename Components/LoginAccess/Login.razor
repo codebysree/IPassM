@@ -39,7 +39,10 @@
 
     private string? ErrorMessage { get; set; }
 
-    protected override void OnInitialized() => Model ??= new();
+    protected override void OnInitialized() 
+    { 
+        Model ??= new();
+    }
 
     private async Task HandleValidSubmit()
     {
