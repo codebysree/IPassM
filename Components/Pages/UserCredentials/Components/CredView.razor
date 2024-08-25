@@ -16,6 +16,15 @@
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered">
                             <thead>
+
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <th><input type="text" /></th>
+                                    <th>User Name</th>
+                                    <th>Password</th>
+                                    <th>Actions</th>
+                                </tr>
                                 <tr>
                                     <th>Website Name</th>
                                     <th>User Name</th>
@@ -24,17 +33,29 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var credential in credentials)
+                                @foreach (var credential in CredentialsList)
                                 {
                                     <tr>
                                         <td>@credential.WebsiteName</td>
                                         <td>@credential.UserName</td>
-                                        <td>@credential.Password</td>
+                                        <td>@(credential.Show ? CsvService!.GetPassword(credential.CredentialId) : "****")</td>
                                         <td>
                                             <span title="Edit" @onclick="(e =>Edit(credential))"><i class="bi bi-pencil-square"></i></span>
                                             <span title="Delete" @onclick="(e=> Delete(credential))"><i class="bi bi-trash3-fill"></i></span>
-                                            <span title="Show" @onclick="(e=>ViewPassword(credential))"><i class="bi bi-eye-fill"></i></span>
-                                            <span title="Show" @onclick="(e=>HidePassword(credential))"><i class="bi bi-eye-slash-fill"></i></span>
+                                            @{
+                                                if (!credential.Show)
+                                                {
+                                                    <span title="Show" @onclick="(e=>ViewPassword(credential))">
+                                                        <i class="bi bi-eye-fill"></i>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span title="hide" @onclick="(e=>HidePassword(credential))">
+                                                        <i class="bi bi-eye-slash-fill"></i>
+                                                    </span>
+                                                }
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -58,7 +79,8 @@
     public string? CredId { get; private set; }
     public CsvService? CsvService { get; private set; }
 
-    private List<Credential> credentials = new List<Credential>();
+    private List<Credential> credentials = new();
+    private List<CredentialDisplay> CredentialsList = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,31 +89,45 @@
         var claims = user.Claims;
         Name = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
         CredId = claims.FirstOrDefault(c => c.Type == "Id")?.Value;
-        CsvService = new(Name, Guid.Parse(CredId));
+        CsvService = new(Name!, Guid.Parse(CredId!));
         credentials = await FetchCredentials();
+        CredentialsList = credentials.Select(cred => new CredentialDisplay
+            (
+                cred.WebsiteName,
+                cred.UserName,
+                cred.Password,
+                false,
+                cred.CredentialId
+            )).ToList();
+
     }
 
-    private async Task Delete(Credential credential)
+    private async Task Delete(CredentialDisplay credential)
     {
         await Task.Delay(0);
         CsvService?.DeleteEntry(credential.CredentialId);
-        PassParam passParam = new("View");
-        await onAddButtonClicked.InvokeAsync(passParam);
+        NavigationManager.NavigateTo("/credential/view", true);
+        // PassParam passParam = new("View");
+        // await onAddButtonClicked.InvokeAsync(passParam);
     }
 
-    private async Task ViewPassword(Credential credential)
+    private async Task ViewPassword(CredentialDisplay credential)
     {
         await Task.Delay(0);
-        credential.Password = CsvService.GetPassword(credential.CredentialId);
+        int index = CredentialsList.FindIndex(e => e.CredentialId == credential.CredentialId);
+        var updated = CredentialsList[index] with { Show = true };
+        CredentialsList[index] = updated;
     }
 
-    private async Task HidePassword(Credential credential)
+    private async Task HidePassword(CredentialDisplay credential)
     {
         await Task.Delay(0);
-        credential.Password = "****";
+        int index = CredentialsList.FindIndex(e => e.CredentialId == credential.CredentialId);
+        var updated = CredentialsList[index] with { Show = false };
+        CredentialsList[index] = updated;
     }
 
-    private async Task Edit(Credential credential)
+    private async Task Edit(CredentialDisplay credential)
     {
         await Task.Delay(0);
         PassParam passParam = new("Edit", credential.CredentialId);
@@ -100,13 +136,15 @@
 
     private async Task DoAction(string action)
     {
-        PassParam passParam = new(action);
+        PassParam passParam = new(action,null);
         await onAddButtonClicked.InvokeAsync(passParam);
     }
 
     private async Task<List<Credential>> FetchCredentials()
     {
         await Task.Delay(0);
-        return CsvService.ViewEntries();
+        return CsvService!.ViewEntries();
     }
+
+    private record CredentialDisplay(string WebsiteName, string UserName, string Password, bool Show, Guid CredentialId);
 }
