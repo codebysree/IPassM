@@ -77,6 +77,27 @@ namespace IPassM.Services
                 Password = "****"
                 //Decrypt(e.Password)
             }).ToList();
+
+        }
+
+        public List<Credential> FilterEntries(string websiteName, string username)
+        {
+            var entries = ReadEntries();
+            return entries
+                .Select(e => new Credential
+                {
+                    CredentialId = e.CredentialId == null ? Guid.NewGuid() : e.CredentialId,
+                    WebsiteName = Decrypt(e.WebsiteName),
+                    UserName = Decrypt(e.UserName),
+                    Password = "****"
+                    //Decrypt(e.Password)
+                })
+                .Where(e =>
+                    (string.IsNullOrEmpty(username) || e.UserName.Contains(username, StringComparison.CurrentCultureIgnoreCase)) &&
+                    (string.IsNullOrEmpty(websiteName) || e.WebsiteName.Contains(websiteName, StringComparison.CurrentCultureIgnoreCase))
+                )
+                .ToList();
+
         }
 
         public Credential? ViewEntry(Guid CredentialId)
